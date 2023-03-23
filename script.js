@@ -27,6 +27,18 @@ function showUserOnScreen(myObj){
         localStorage.removeItem(myObj.name);
         parentElement.removeChild(childElement)
     }
+
+    const editbtn = document.createElement('input');
+    editbtn.type = 'button'
+    editbtn.value = 'Edit'
+    editbtn.onclick = () =>{
+        localStorage.removeItem(myObj.name);
+        parentElement.removeChild(childElement);
+        document.getElementById("name").value = myObj.name;
+        document.getElementById("email").value = myObj.email;
+        document.getElementById("phone").value = myObj.phone;
+    }
     childElement.appendChild(deleteBtn);
+    childElement.appendChild(editbtn);
     parentElement.appendChild(childElement);
 }
