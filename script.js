@@ -10,7 +10,15 @@ function savelocalStorage(event){
         email,
         phone
     }
-    localStorage.setItem(myObj.name, JSON.stringify(myObj));
+
+    axios.post("https://crudcrud.com/api/1657eddcbc3d4350808edd4abce66daf/appointmentData",myObj)
+    .then((response) =>{
+        console.log(response.data)
+    })
+    .catch((err) =>{
+        console.log(err)
+    })
+    // localStorage.setItem(myObj.name, JSON.stringify(myObj));
     showUserOnScreen(myObj);
 }
 
@@ -42,3 +50,30 @@ function showUserOnScreen(myObj){
     childElement.appendChild(editbtn);
     parentElement.appendChild(childElement);
 }
+
+window.addEventListener("DOMContentLoaded", () =>{
+    axios.get("https://crudcrud.com/api/1657eddcbc3d4350808edd4abce66daf/appointmentData")
+    .then((response) =>{
+        // console.log(response)
+
+        for(var i=0;i<response.data.length;i++){
+            showUserOnScreen(response.data[i])
+        }
+    })
+    .catch((error) =>{
+        console.log(error)
+    })
+
+    console.log(data)
+    // const localStorageObj = localStorage;
+    // const localStorageKeys = Object.keys(localStorageObj)
+
+    // for(var i=0;i<localStorageKeys.length;i++){
+    //     const key = localStorageKeys[i]
+    //     const userDetailsString = localStorageObj[key];
+    //     const userDetailsObj = JSON.parse(userDetailsString);
+    //     showUserOnScreen(userDetailsObj)
+    // }
+})
+  
+  
