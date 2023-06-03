@@ -1,58 +1,31 @@
-function savelocalStorage(event){
+function saveToLocalStorage(event){
     event.preventDefault();
 
     const name = event.target.name.value;
     const email = event.target.email.value;
-    const phone = event.target.phone.value;
+    const phonenumber = event.target.phonenumber.value;
 
     const myObj = {
         name,
         email,
-        phone
+        phonenumber
     }
 
-    axios.post("https://crudcrud.com/api/1657eddcbc3d4350808edd4abce66daf/appointmentData",myObj)
+    axios.post("https://crudcrud.com/api/84ee26d972024be2b7bbd101b2c18902/appointmentdata",myObj)
     .then((response) =>{
-        console.log(response.data)
+        showUserOnScreen(response.data)
+        console.log(response)
     })
     .catch((err) =>{
-        console.log(err)
+        document.body.innerHTML = document.body.innerHTML + "<h4> Something went wrong </h4>"
+        console.log(err);
     })
     // localStorage.setItem(myObj.name, JSON.stringify(myObj));
-    showUserOnScreen(myObj);
-}
-
-function showUserOnScreen(myObj){
-    const parentElement = document.getElementById("listOfItems");
-    const childElement = document.createElement('li');
-
-    childElement.textContent = myObj.name + " - "+myObj.email+" - "+myObj.phone
-
-    const deleteBtn = document.createElement('input');
-    deleteBtn.type = 'button'
-    deleteBtn.value = 'Delete'
-    deleteBtn.onclick = () =>{
-        localStorage.removeItem(myObj.name);
-        parentElement.removeChild(childElement)
-    }
-
-    const editbtn = document.createElement('input');
-    editbtn.type = 'button'
-    editbtn.value = 'Edit'
-    editbtn.onclick = () =>{
-        localStorage.removeItem(myObj.name);
-        parentElement.removeChild(childElement);
-        document.getElementById("name").value = myObj.name;
-        document.getElementById("email").value = myObj.email;
-        document.getElementById("phone").value = myObj.phone;
-    }
-    childElement.appendChild(deleteBtn);
-    childElement.appendChild(editbtn);
-    parentElement.appendChild(childElement);
+    // showUserOnScreen(myObj);
 }
 
 window.addEventListener("DOMContentLoaded", () =>{
-    axios.get("https://crudcrud.com/api/1657eddcbc3d4350808edd4abce66daf/appointmentData")
+    const data = axios.get(`https://crudcrud.com/api/84ee26d972024be2b7bbd101b2c18902/appointmentdata`)
     .then((response) =>{
         // console.log(response)
 
@@ -77,3 +50,55 @@ window.addEventListener("DOMContentLoaded", () =>{
 })
   
   
+
+function showUserOnScreen(user){
+    user = {
+        _id: '',
+        name: '',
+        email: '',
+    }
+    document.getElementById('name').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('phonenumber').value = '';
+
+    if(localStorage.getItem(user.email)!==null){
+        removeUsersFromScreen(user.email);
+    }
+    const parentNode = document.getElementById("listOfItems");
+    const childHTML = `<li id=${user._id}> ${user.name} - ${user.email}
+    <button onclick=deleteUser('${user._id}')> Delete User
+    <button onclick=editUserDetails('${user._id}','${user.email}','${user.phonenumber}')>Edit</button>
+    </li>`
+
+    parentNode.innerHTML += childHTML;
+
+}
+function editUserDetails(email, name, phonenumber){
+    document.getElementById('email').value = email;
+    document.getElementById('name').value=name;
+    document.getElementById('phonenumber').value = phonenumber;
+
+    deleteUser(email);
+}
+
+function removeUsersFromScreen(userId){
+    const parentNode = document.getElementById('listOfItems');
+    const childNodeToBeDeleted = document.getElementById(userId);
+    if(childNodeToBeDeleted){
+        parentNode.removeChild(childNodeToBeDeleted)
+    }
+}
+
+function deleteUser(userId){
+
+    axios.delete(`https://crudcrud.com/api/84ee26d972024be2b7bbd101b2c18902/appointmentdata/${userId}`)
+    .then((response) =>{
+        removeUsersFromScreen(userId);
+    })
+    .catch((err)=>{
+        console.log(err);
+    })
+    // console.log(email);
+    // localStorage.removeItem(email);
+    // removeUsersFromScreen(email);
+}
